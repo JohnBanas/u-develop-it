@@ -27,7 +27,11 @@ const db = mysql.createConnection(
 
 // GET all candidates
 app.get('/api/candidates', (req, res) => {
-  const sql = `SELECT * FROM candidates`;
+  const sql = `SELECT candidates.*, parties.name 
+             AS party_name 
+             FROM candidates 
+             LEFT JOIN parties 
+             ON candidates.party_id = parties.id`;
   db.query(sql, (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -48,7 +52,12 @@ app.get('/api/candidates', (req, res) => {
 // GET a single candidate express GET by id from api endpoint
 app.get('/api/candidate/:id', (req, res) => {
   //mysql request
-  const sql = `SELECT * FROM candidates WHERE id = ?`;
+  const sql = `SELECT candidates.*, parties.name 
+             AS party_name 
+             FROM candidates 
+             LEFT JOIN parties 
+             ON candidates.party_id = parties.id 
+             WHERE candidates.id = ?`;
   //pass the id requests(req) from the url into a varaiable
   const params = [req.params.id];
   //query(the sql variable passed as argument in db.query) 
